@@ -23,7 +23,7 @@ module.exports = function ( grunt ) {
 
 		/** Options for the process */
 		var options = this.options( {
-			depends             : [], // A list of bundles this task depends on, string array of task names to analyze
+//			depends             : [], // A list of bundles this task depends on, string array of task names to analyze
 			resolveAliases      : true, // When true, aliases are are resolved against dependencies and formatted so that they can compile
 			insertGlobals       : false, // When opts.insertGlobals is true, always insert process, global, __filename, and __dirname without analyzing the AST for faster builds but larger output bundles. Default false.
 			detectGlobals       : true, // When opts.detectGlobals is true, scan all files for process, global, __filename, and __dirname, defining as necessary. With this option npm modules are more likely to work but bundling takes longer. Default true.
