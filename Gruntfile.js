@@ -31,11 +31,14 @@ module.exports = function ( grunt ) {
 		// Configuration to be run (and then tested).
 		bundles  : {
 			lib1 : {
+				options : {
+					aliasManifestDest : "fixtures/out/lib1.json"
+				},
 				depends : ["lib2"],
 				dest    : "fixtures/out/lib1.js",
 				modules : {
 					src : ["fixtures/lib1-1.js", "fixtures/lib1-2.js"]
-				} ,
+				},
 				aliases : [
 					{
 						cwd  : "fixtures",
@@ -46,7 +49,7 @@ module.exports = function ( grunt ) {
 			},
 			lib2 : {
 				dest    : "fixtures/out/lib2.js",
-				modules : {
+				publish : {
 					src : ["fixtures/lib2-1.js", "fixtures/lib2-2.js"]
 				},
 				aliases : [
@@ -55,12 +58,15 @@ module.exports = function ( grunt ) {
 						src  : ["lib2*.js"],
 						dest : "lib2"
 					}
-				]
+				],
+				options : {
+					aliasManifestSrc : "fixtures/external.manifest.json"
+				}
 			},
 			app  : {
-				depends: ["lib1", "lib2"],
+				depends : ["lib1", "lib2"],
 				dest    : "fixtures/out/app.js",
-				exec : {
+				exec    : {
 					src : ["fixtures/app.main.js", "fixtures/app.js"]
 				}
 			}

@@ -1,0 +1,7 @@
+{
+	"manifest" : [
+		"lib3/lib3-1",
+		"lib3/lib3-2"
+	],
+	"name"     : "lib3"
+}

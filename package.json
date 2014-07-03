@@ -1,47 +1,47 @@
 {
-  "name": "grunt-bundles",
-  "description": "Finer control over the browserify and neat aliasing of multiple dependent bundles",
-  "version": "0.2.0",
-  "homepage": "https://github.com/terryweiss/grunt-bundles",
-  "author": {
-    "name": "Terry Weiss",
-    "email": "terry.weiss@gmail.com",
-    "url": "terryweiss.net"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/terryweiss/grunt-bundles"
-  },
-  "bugs": {
-    "url": "https://github.com/terryweiss/grunt-bundles/issues"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/terryweiss/grunt-bundles/blob/master/LICENSE-MIT"
-    }
-  ],
-  "engines": {
-    "node": ">= 0.10.28"
-  },
-  "devDependencies": {
-    "grunt-contrib-jshint": "^0.9.2",
-    "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-nodeunit": "^0.3.3"
-  },
-  "peerDependencies": {
-    "grunt": "~0.4.5"
-  },
-  "keywords": [
-    "gruntplugin",
-    "browserify",
-    "bundle",
-    "grunt"
-  ],
-  "dependencies": {
-    "async": "^0.9.0",
-    "browserify": "^4.1.11",
-    "lodash": "^2.4.1",
-    "through": "^2.3.4"
-  }
+	"name"             : "grunt-bundles",
+	"description"      : "Finer control over the browserify and neat aliasing of multiple dependent bundles",
+	"version"          : "0.2.0",
+	"homepage"         : "https://github.com/terryweiss/grunt-bundles",
+	"author"           : {
+		"name"  : "Terry Weiss",
+		"email" : "terry.weiss@gmail.com",
+		"url"   : "https://github.com/terryweiss"
+	},
+	"repository"       : {
+		"type" : "git",
+		"url"  : "git://github.com/terryweiss/grunt-bundles"
+	},
+	"bugs"             : {
+		"url" : "https://github.com/terryweiss/grunt-bundles/issues"
+	},
+	"licenses"         : [
+		{
+			"type" : "MIT",
+			"url"  : "https://github.com/terryweiss/grunt-bundles/blob/master/LICENSE-MIT"
+		}
+	],
+	"engines"          : {
+		"node" : ">= 0.10.28"
+	},
+	"devDependencies"  : {
+		"grunt-contrib-jshint"   : "^0.9.2",
+		"grunt-contrib-clean"    : "^0.5.0",
+		"grunt-contrib-nodeunit" : "^0.3.3"
+	},
+	"peerDependencies" : {
+		"grunt" : "~0.4.5"
+	},
+	"keywords"         : [
+		"gruntplugin",
+		"browserify",
+		"bundle",
+		"grunt"
+	],
+	"dependencies"     : {
+		"async"      : "^0.9.0",
+		"browserify" : "^4.1.11",
+		"lodash"     : "^2.4.1",
+		"through"    : "^2.3.4"
+	}
 }
