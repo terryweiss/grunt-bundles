@@ -39,9 +39,7 @@ module.exports = function ( grunt ) {
 			builtins            : null, // sets the list of builtins to use, which by default is set in lib/builtins.js in this distribution.
 			bundleExternal      : true, // boolean option to set if external modules should be bundled. Defaults to true.
 			pack                : null, // sets the browser-pack implementation to use.
-			externalRequireName : null, // defaults to 'require' in expose mode but you can use another name.
-			aliasManifestDest   : null, // when true, a manifest that can be used in other projects to read externals will be created in this location with this name
-			aliasManifestSrc    : null // An imported manifest set from another project's aliasManifestDest
+			externalRequireName : null // defaults to 'require' in expose mode but you can use another name.
 		} );
 
 		/** find another task's entries */
@@ -49,15 +47,12 @@ module.exports = function ( grunt ) {
 			var task = grunt.config.get( "bundles" )[taskName];
 			var retVal = [];
 			if ( task ) {
-				var sources = task.publish;
+				var sources = task.modules;
 				if ( !sys.isEmpty( sources ) && !sys.isEmpty( sources.src ) ) {
-
+					grunt.log.writeln( "Adding sources for " + taskName );
 					retVal = sys.map( grunt.file.expand( sources, sources.src ), function ( item ) {
 						return resolvePath( item );
 					} );
-				}
-				if ( task && task.options && !sys.isEmpty( task.options.aliasManifestSrc ) ) {
-					retVal = sys.union( retVal, readExternalManifest( task.options.aliasManifestSrc ) );
 				}
 			}
 			return retVal;
@@ -70,8 +65,9 @@ module.exports = function ( grunt ) {
 
 			if ( !expanded ) {
 				resolved = require.resolve( file );
+
 			} else {
-				resolved = path.resolve( expanded );
+				resolved = "./" + expanded;
 			}
 
 			return resolved;
@@ -88,8 +84,7 @@ module.exports = function ( grunt ) {
 				publish       : [],
 				externals     : [],
 				modules       : [],
-				noParse       : [],
-				manifest      : []
+				noParse       : []
 			};
 
 			// process modules to ignore
@@ -153,10 +148,10 @@ module.exports = function ( grunt ) {
 			}
 
 			// get all task aliases
-			sys.extend( pkg.aliases, getTaskAliases( task.target, pkg ) );
+			sys.extend( pkg.aliases, getTaskAliases( task.target, options ) );
 			if ( !sys.isEmpty( task.data.depends ) ) {
 				sys.each( task.data.depends, function ( depends ) {
-					var dependents = getTaskAliases( depends, pkg );
+					var dependents = getTaskAliases( depends, options );
 
 					sys.each( dependents, function ( val, key ) {
 						pkg.dependAliases.push( key );
@@ -166,43 +161,21 @@ module.exports = function ( grunt ) {
 
 			// get dependencies definitions and add them to this as external
 			if ( options.autoExternals && !sys.isEmpty( task.data.depends ) ) {
-				sys.each( task.data.depends, function ( dependent ) {
-					pkg.externals = pkg.externals.concat( getTaskSources( dependent ) );
+				sys.each( task.data.depends, function ( depends ) {
+					pkg.externals = pkg.externals.concat( getTaskSources( depends ) );
 				} );
-			}
-
-			if ( !sys.isEmpty( options.aliasManifestSrc ) ) {
-				pkg.externals = sys.union( pkg.externals, readExternalManifest( options.aliasManifestSrc ) );
 			}
 
 			return pkg;
 		};
 
-		var readExternalManifest = function ( aliasManifestSrc ) {
-			var retVal = [];
-			if ( sys.isArray( aliasManifestSrc ) ) {
-				sys.each( aliasManifestSrc, function ( src ) {
-					var man = grunt.file.readJSON( src );
-					sys.each( man.manifest, function ( item ) {
-						retVal.push( item );
-					} );
-				} );
-			} else {
-				var man = grunt.file.readJSON( aliasManifestSrc );
-				sys.each( man.manifest, function ( item ) {
-					retVal.push( item );
-				} );
-			}
-			return retVal;
-		};
-
 		/** find alias definitions and map them to file names **/
-		var getTaskAliases = function ( taskName, pkg ) {
-			var thisTask = grunt.config.get( "bundles" )[taskName];
+		var getTaskAliases = function ( taskName ) {
+			var task = grunt.config.get( "bundles" )[taskName];
 
 			var retVal = {};
-			if ( thisTask && thisTask.aliases ) {
-				var aliases = thisTask.aliases;
+			if ( task && task.aliases ) {
+				var aliases = task.aliases;
 				if ( !sys.isEmpty( aliases ) ) {
 					grunt.verbose.writeln( "Adding aliases for " + taskName );
 					if ( sys.isArray( aliases ) ) {
@@ -216,7 +189,6 @@ module.exports = function ( grunt ) {
 							map.expand = map.expand !== false;
 							var files = grunt.file.expand( map, map.src );
 							sys.each( files, function ( item ) {
-
 								var thisPath;
 								if ( sys.isEmpty( map.dest ) ) {
 									thisPath = item;
@@ -225,11 +197,8 @@ module.exports = function ( grunt ) {
 								}
 
 								var thisAlias = thisPath.replace( /\.[^/.]+$/, "" ).replace( /\\/g, "/" );
-								retVal[thisAlias] = resolvePath( path.join( map.cwd, item ) );
 
-								if ( task.target === taskName && !sys.isEmpty( options.aliasManifestDest ) ) {
-									pkg.manifest.push( thisAlias );
-								}
+								retVal[thisAlias] = resolvePath( path.join( map.cwd, item ) );
 
 							} );
 						} );
@@ -253,6 +222,7 @@ module.exports = function ( grunt ) {
 				externalRequireName : options.externalRequireName,
 				pack                : options.pack,
 				bundleExternal      : options.bundleExternal,
+//				builtins            : options.builtins,
 				fullPaths           : options.fullPaths,
 				commondir           : options.commondir,
 				basedir             : options.basedir,
@@ -269,6 +239,7 @@ module.exports = function ( grunt ) {
 			} );
 
 			sys.each( pkg.aliases, function ( item, name ) {
+
 				compiler.require( item, {expose : name} );
 			} );
 
@@ -339,10 +310,6 @@ module.exports = function ( grunt ) {
 				JSON.stringify( opts, null, 2 ) + "\n" +
 				JSON.stringify( pkg, null, 2 ) + "\n"
 		);
-
-		if ( !sys.isEmpty( options.aliasManifestDest ) ) {
-			grunt.file.write( options.aliasManifestDest, JSON.stringify( {manifest : pkg.manifest, name : task.target}, null, 2 ) );
-		}
 
 		async.parallel( [function ( done ) {
 			if ( options.envelope ) {

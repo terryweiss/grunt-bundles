@@ -12,7 +12,7 @@ module.exports = function ( grunt ) {
 
 	// Project configuration.
 	grunt.initConfig( {
-		jshint   : {
+		jshint  : {
 			all     : [
 				'Gruntfile.js',
 				'tasks/*.js',
@@ -24,12 +24,12 @@ module.exports = function ( grunt ) {
 		},
 
 		// Before generating any new files, remove any previously-created files.
-		clean    : {
+		clean   : {
 			tests : ['fixtures/out']
 		},
 
 		// Configuration to be run (and then tested).
-		bundles  : {
+		bundles : {
 			lib1 : {
 				options : {
 					aliasManifestDest : "fixtures/out/lib1.json"
@@ -73,6 +73,18 @@ module.exports = function ( grunt ) {
 
 		},
 
+		shell    : {
+			release : {
+				command : [
+					'git add .;git commit -m "ready for release"',
+					"npm version patch",
+					"git push",
+					"git push --tags",
+					"npm publish"
+				].join( "&&" )
+			}
+		},
+
 		// Unit tests.
 		nodeunit : {
 			tests : ['test/*_test.js']
@@ -87,6 +99,7 @@ module.exports = function ( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-contrib-clean' );
 	grunt.loadNpmTasks( 'grunt-contrib-nodeunit' );
+	grunt.loadNpmTasks( 'grunt-shell' );
 
 	// Whenever the "test" task is run, first clean the "tmp" dir, then run this
 	// plugin's task(s), then test the result.
@@ -94,5 +107,6 @@ module.exports = function ( grunt ) {
 
 	// By default, lint and run all tests.
 	grunt.registerTask( 'default', ['clean', 'bundles'] );
+	grunt.registerTask( 'release', ['shell:release'] );
 
 };
