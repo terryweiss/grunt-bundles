@@ -338,13 +338,22 @@ module.exports = function ( grunt ) {
 			compiler.bundle( opts, function ( err, data ) {
 				if ( err ) { return done( err ); }
 
-				grunt.verbose.writeln( "Writing " + task.data.dest );
-				grunt.file.write( path.resolve( task.data.dest ), data );
+				var dest;
+				if ( sys.isString( task.data.dest ) ) {
+					dest = task.data.dest;
+				} else if ( sys.isArray( task.data.files ) && task.data.files.length > 0 ) {
+					dest = task.data.files[0].dest
+				}
 
-				grunt.verbose.writeln( "Compiled:\n" +
-						JSON.stringify( compiler, null, 2 )
-				);
-				grunt.verbose.writeln( task.data.dest + " complete" );
+				grunt.verbose.writeln( "Writing " + dest );
+				grunt.file.write( path.resolve( dest ), data );
+
+				// uncomment to troubleshoot
+//				grunt.verbose.writeln( "Compiled:\n" +
+//						JSON.stringify( compiler, null, 2 )
+//				);
+
+				grunt.verbose.writeln( dest + " complete" );
 				done();
 			} );
 		}], function ( err ) {
