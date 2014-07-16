@@ -1,7 +1,7 @@
 {
   "name": "grunt-bundles",
   "description": "Finer control over the browserify and neat aliasing of multiple dependent bundles",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "homepage": "https://github.com/terryweiss/grunt-bundles",
   "author": {
     "name": "Terry Weiss",
