@@ -76,7 +76,8 @@ module.exports = function ( grunt ) {
 		shell    : {
 			release : {
 				command : [
-					'git add .;git commit -m "ready for release"',
+					"touch Gruntfile.js",
+					'git add .;git commit -m --force "ready for release"' ,
 					"npm version patch",
 					"git push",
 					"git push --tags",
