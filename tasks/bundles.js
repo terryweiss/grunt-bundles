@@ -335,7 +335,7 @@ module.exports = function ( grunt ) {
 				done();
 			}
 		}, function ( done ) {
-			compiler.bundle( opts, function ( err, data ) {
+			compiler.bundle( function ( err, data ) {
 				if ( err ) { return done( err ); }
 
 				var dest;
